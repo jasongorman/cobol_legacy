@@ -1,0 +1,65 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PRICE-MOVIE-TEST.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+           01  IMDB-ID             PIC X(10).
+           01  PRICE               PIC 9(2)V9(2).
+           01  EXPECTED-PRICE      PIC 9(2)V9(2).
+           01  READ-MODULE         PIC X(30) VALUE 'READ-STUB'.
+           01 TEST-MOVIE EXTERNAL.
+               02 TEST-MOVIE-ID     PIC X(10).
+               02 TEST-TITLE        PIC X(50).
+               02 TEST-YEAR         PIC 9(4).
+               02 TEST-RATING       PIC 9(2)V9(1).
+       LINKAGE SECTION.
+           COPY 'test-context.cpy'.
+       PROCEDURE DIVISION USING TEST-CONTEXT.
+       MAIN-PROCEDURE.
+           PERFORM STANDARD-PRICE-TEST.
+           PERFORM PREMIUM-PRICE-TEST.
+           PERFORM BARGAIN-PRICE-TEST.
+           PERFORM MASTERPIECE-PRICE-TEST.
+
+           GOBACK.
+
+       STANDARD-PRICE-TEST.
+           MOVE 5.5 TO TEST-RATING.
+           MOVE 'tt12345' TO IMDB-ID.
+           MOVE 3.95 TO EXPECTED-PRICE.
+
+           CALL 'PRICE-MOVIE' USING IMDB-ID, PRICE, READ-MODULE.
+
+           CALL 'ASSERT-EQUAL' USING TEST-CONTEXT, 'STANDARD-PRICE-TEST',
+                                   EXPECTED-PRICE, PRICE.
+
+       PREMIUM-PRICE-TEST.
+           MOVE 7.9 TO TEST-RATING.
+           MOVE 'tt23456' TO IMDB-ID.
+           MOVE 4.95 TO EXPECTED-PRICE.
+
+           CALL 'PRICE-MOVIE' USING IMDB-ID, PRICE, READ-MODULE.
+
+           CALL 'ASSERT-EQUAL' USING TEST-CONTEXT, 'PREMIUM-PRICE-TEST',
+                                   EXPECTED-PRICE, PRICE.
+
+       BARGAIN-PRICE-TEST.
+           MOVE 3.7 TO TEST-RATING.
+           MOVE 'tt34567' TO IMDB-ID.
+           MOVE 2.95 TO EXPECTED-PRICE.
+
+           CALL 'PRICE-MOVIE' USING IMDB-ID, PRICE, READ-MODULE.
+
+           CALL 'ASSERT-EQUAL' USING TEST-CONTEXT, 'BARGAIN-PRICE-TEST',
+                                   EXPECTED-PRICE, PRICE.
+
+       MASTERPIECE-PRICE-TEST.
+           MOVE 8.4 TO TEST-RATING.
+           MOVE 'tt45678' TO IMDB-ID.
+           MOVE 5.95 TO EXPECTED-PRICE.
+
+           CALL 'PRICE-MOVIE' USING IMDB-ID, PRICE, READ-MODULE.
+
+           CALL 'ASSERT-EQUAL' USING TEST-CONTEXT,
+               'MASTERPIECE-PRICE-TEST', EXPECTED-PRICE, PRICE.
+
+       END PROGRAM PRICE-MOVIE-TEST.
